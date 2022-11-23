@@ -74,4 +74,4 @@ public String hello() {
 
 # Filter Architecture
 
-spring security 的 `Filter` 结构是理解 spring security 的核心，也是安全机制生效的入口。
+spring security 的 `Filter` 架构是理解 spring security 的核心，也是安全机制生效的入口。
