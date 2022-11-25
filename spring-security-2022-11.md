@@ -99,3 +99,23 @@ spring security 的 `Filter` 架构是理解 spring security 的核心，也是�
 如果想知道 spring security 具体为我们配置了哪些 `Filter`，`DelegatingFilterProxy` 的构造函数就是最好的切入口。
 
 如果想知道 spring security 的认证和授权逻辑，`SecurityFilterChain` 中的各种 `Filter` 就是最好的切入口。
+
+
+
+# SecurityContext Architecture
+
+`Authentication` 负责表示用户的认证信息，包括用户名，密码，权限等相关信息。
+
+`SecurityContext` 负责存取 `Authentication`，spring security 会将用户的认证信息保存在安全上下文中。
+
+`SecurityContextHolder` 负责管理 `SecurityContext`。
+
+`SecurityContextHolderStrategy` 负责 `SecurityContextHolder` 的具体管理策略，也就是说 `SecurityContextHolder` 会将具体的职责委派给 `SecurityContextHolderStrategy`。
+
+`SecurityContextRepository` 负责存取 `SecurityContext`。
+
+> 注意：这里比较容易混淆 `SecurityContextHolder` 和 `SecurityContextRepository` 的职责。
+>
+> `SecurityContextHolder` 负责在一个请求线程中管理 `SecurityContext`。因为请求会在多个 `Filter` 之间传递，所以需要一种策略让每个 `Filter` 都能顺利获得 `SecurityContext` 从而履行自己的职责。
+>
+> `SecurityContextRepository` 负责在多个请求线程之间管理 `SecurityContext`。毕竟不能让用户每次发一个请求都重新登录一次吧。
