@@ -75,3 +75,25 @@ public String hello() {
 # Filter Architecture
 
 spring security 的 `Filter` 架构是理解 spring security 的核心，也是安全机制生效的入口。
+
+通过一张图进行相关说明。
+
+![spring security filters](./img/Filters.excalidraw.png)
+
+> 注意：图片右侧列出了所有的 `Filter` 作为参考，它们的顺序非常重要。
+
+> 注意：spring security 会根据用户的配置，启用或停用不同的 `Filter`。
+
+1. `SecurityFilterAutoConfiguration` 通过自动装配机制向 `ApplicationContext` 注册一个 `DelegatingFilterProxyRegistrationBean` Bean。
+
+2. `DelegatingFilterProxyRegistrationBean` 通过 `ServletContextInitializer` 机制向 `ServletContext` 注册一个 `DelegatingFilterProxy` Filter。
+
+3. `DelegatingFilterProxy` 通过名称查找名为 `springSecurityFilterChain` 的 `FilterChainProxy` Bean，并将 `Filter` 的职责委派给它。
+
+4. `WebSecurity` 会在 `FilterChainProxy` 添加 `SecurityFilterChain`，并将 `Filter` 的职责委派给它。
+
+5. `HttpSecurity` 会根据用户配置在 `SecurityFilterChain` 添加不同的 `Filter` 实现，并将 `Filter` 的职责委派给它们，以此实现认证和授权。
+
+如果想知道 spring security 具体为我们配置了哪些 `Filter`，`DelegatingFilterProxy` 的构造函数就是最好的切入口。
+
+而 `SecurityFilterChain` 中的各种 `Filter` 就是具体逻辑的实现，通过跟踪这些 `Filter` 的执行逻辑，就是了解整个 spring security 认证和授权的最好切入口。
