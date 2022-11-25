@@ -80,7 +80,7 @@ spring security 的 `Filter` 架构是理解 spring security 的核心，也是�
 
 ![spring security filters](./img/Filters.excalidraw.png)
 
-> 注意：图片右侧列出了所有的 `Filter` 作为参考，它们的顺序非常重要，[官网说明](https://docs.spring.io/spring-security/reference/5.7.4/servlet/architecture.html#servlet-security-filters)。
+> 注意：图片右侧列出了所有的 `Filter` 作为参考，它们的顺序非常重要，可以参考[官网说明](https://docs.spring.io/spring-security/reference/5.7.4/servlet/architecture.html#servlet-security-filters)，或查看 `FilterOrderRegistration` 的构造器函数。
 >
 > 注意：spring security 会根据用户的配置，启用或停用不同的 `Filter`。
 
