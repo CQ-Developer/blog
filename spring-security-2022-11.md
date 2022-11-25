@@ -94,6 +94,8 @@ spring security 的 `Filter` 架构是理解 spring security 的核心，也是�
 
 5. `HttpSecurity` 会根据用户配置在 `SecurityFilterChain` 中添加不同的 `Filter` 实现，并将 `Filter` 的职责委派给它们，以此实现认证和授权。
 
+> 注意：并不是所有 `Filter` 都是负责认证和授权的，它们各司其职，比如管理 `HttpSession`，管理 `SecurityContext`，处理异常，处理 CSRF 攻击，负责登录登出，等等。
+
 如果想知道 spring security 具体为我们配置了哪些 `Filter`，`DelegatingFilterProxy` 的构造函数就是最好的切入口。
 
 如果想知道 spring security 的认证和授权逻辑，`SecurityFilterChain` 中的各种 `Filter` 就是最好的切入口。
