@@ -119,3 +119,37 @@ spring security 的 `Filter` 架构是理解 spring security 的核心，也是�
 > `SecurityContextHolder` 负责在一个请求线程中管理 `SecurityContext`。因为请求会在多个 `Filter` 之间传递，所以需要一种策略让每个 `Filter` 都能顺利获得 `SecurityContext` 从而履行自己的职责。
 >
 > `SecurityContextRepository` 负责在多个请求线程之间管理 `SecurityContext`。毕竟不能让用户每次发一个请求都重新登录一次吧。
+
+
+
+# Authentication Architecture
+
+spring security 的认证架构比较复杂，先抽象的用一张认证的主流程图进行说明，再使用 *HttpBasic* 这种比较简单的基于 **用户名密码** 的方式进行说明。
+
+> 注意：其他比较复杂的认证方式比如 OAuth2 可以 debug 跟踪，切入点就是前文所述的那些 `Filter`，基本流程大差不差，只是核心组件上会有区别。
+
+![认证架构](./img/Authentication.excalidraw.png)
+
+1. 当请求到达负责认证的 `Filter` 时，认证的工作会被委派给 `AuthenticationManager`。
+
+2. `AuthenticationManager` 负责管理整个认证流程，基本它的唯一实现是 `ProviderManager`。
+
+3. 因为可能存在多种不同的认证方式，所以 `AuthenticationManager` 会将认证流程委派给不同的 `AuthenticationProvider`。
+
+4. `AuthenticationProvider` 通过 `UserDetailsService` 找到用户信息 `UserDetails`。
+
+5. 再通过 `PasswordEncoder` 验证用户的密码是否正确。
+
+6. 最后将用户的认证信息 `Authentication` 交给 `SecurityContextHolder` 管理。
+
+对于 *HttpBasic* 登录方式来说。
+
+![HttpBasic认证架构](./img/Authentication-HttpBasic.excalidraw.png)
+
+1. `BasicAuthenticationFilter` 是 *HttpBasic* 认证方式的入口，他会从请求头中解析出用户名和密码。
+
+2. 将用户名密码封装成用户的认证信息 `UsernamePasswordAuthenticationToken`，并将其委派给 `ProviderManager` 进行认证。
+
+3. `ProviderManager` 找到支持对 `UsernamePasswordAuthenticationToken` 进行认证的 `AuthenticationProvider`，也就是 `DaoAuthenticationProvider`，并对其进行认证。
+
+4. 认证成功后，`DaoAuthenticationProvider` 会封装一个新的已认证的 `UsernamePasswordAuthenticationToken` 并将其返回给 `BasicAuthenticationFilter`，并存储到 `SecurityContextHolder` 中。
