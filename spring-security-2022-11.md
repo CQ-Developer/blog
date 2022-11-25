@@ -153,3 +153,35 @@ spring security 的认证架构比较复杂，先抽象的用一张认证的主�
 3. `ProviderManager` 找到支持对 `UsernamePasswordAuthenticationToken` 进行认证的 `AuthenticationProvider`，也就是 `DaoAuthenticationProvider`，并对其进行认证。
 
 4. 认证成功后，`DaoAuthenticationProvider` 会封装一个新的已认证的 `UsernamePasswordAuthenticationToken` 并将其返回给 `BasicAuthenticationFilter`，并存储到 `SecurityContextHolder` 中。
+
+
+
+# Authorization Architecture
+
+spring security 的授权架构相对比较简单，基本是通过授权过滤器实现的。但基于不同的配置，spring security 会选择两个不同的授权过滤器。
+
+1. org.springframework.security.web.access.intercept.FilterSecurityInterceptor
+
+2. org.springframework.security.web.access.intercept.AuthorizationFilter
+
+[官方网站](https://docs.spring.io/spring-security/reference/5.7.4/servlet/authorization/authorize-http-requests.html) 推荐使用 `AuthorizationFilter`，但为了保持相互兼容默认启用的还是 `FilterSecurityInterceptor`。
+
+spring security 在 *5.5* 版本中支持了 `AuthorizationFilter`。官方给出的几点推荐理由是：
+
+1. 使用简单的 `AuthorizationManager` API 代替了复杂了 `FilterInvocationSecurityMetadataSource` API。
+
+2. 延迟对 `Authentication` 的查找。
+
+3. 支持基于 Bean 的配置。
+
+其实还有一点也很重要，就是语义上的统一。如前文所述，在认证过滤器中认证职责被委派给了 `AuthenticationManager`。授权过滤器将授权职责委派给 `AuthroizationManager` 可以更好的将认证和授权的语义统一。
+
+
+## Authorize with AuthorizationFilter
+
+...
+
+
+## Authorize with FilterSecurityInterceptor
+
+...
