@@ -47,7 +47,7 @@ public String hello() {
 之所有有这种能力，是因为 spring boot 为我们提供了自动装配。通过 `spring-autoconfigure-metadata.properties` 文件列出 servlet 环境下的自动装配类如下。
 
 > 注意：这里排除了 oauth2 的自动装配信息。
-
+>
 > 注意：老版本可以查看 `spring.factories` 文件。
 
 - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
@@ -80,8 +80,8 @@ spring security 的 `Filter` 架构是理解 spring security 的核心，也是�
 
 ![spring security filters](./img/Filters.excalidraw.png)
 
-> 注意：图片右侧列出了所有的 `Filter` 作为参考，它们的顺序非常重要。
-
+> 注意：图片右侧列出了所有的 `Filter` 作为参考，它们的顺序非常重要，[官网说明](https://docs.spring.io/spring-security/reference/5.7.4/servlet/architecture.html#servlet-security-filters)。
+>
 > 注意：spring security 会根据用户的配置，启用或停用不同的 `Filter`。
 
 1. `SecurityFilterAutoConfiguration` 通过自动装配机制向 `ApplicationContext` 注册一个 `DelegatingFilterProxyRegistrationBean` Bean。
