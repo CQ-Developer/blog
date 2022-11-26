@@ -116,9 +116,9 @@ spring security 的 `Filter` 架构是理解 spring security 的核心，也是�
 
 > 注意：这里比较容易混淆 `SecurityContextHolder` 和 `SecurityContextRepository` 的职责。
 >
-> `SecurityContextHolder` 负责在一个请求线程中管理 `SecurityContext`。因为请求会在多个 `Filter` 之间传递，所以需要一种策略让每个 `Filter` 都能顺利获得 `SecurityContext` 从而履行自己的职责。
+> - `SecurityContextHolder` 负责在一个请求线程中管理 `SecurityContext`。因为请求会在多个 `Filter` 之间传递，所以需要一种策略让每个 `Filter` 都能获得 `SecurityContext` 从而履行自己的职责。
 >
-> `SecurityContextRepository` 负责在多个请求线程之间管理 `SecurityContext`。毕竟不能让用户每次发一个请求都重新登录一次吧。
+> - `SecurityContextRepository` 负责在多个请求线程之间管理 `SecurityContext`。毕竟不能让用户每次发一个请求都重新认证一次。
 
 
 
@@ -179,7 +179,19 @@ spring security 在 *5.5* 版本中支持了 `AuthorizationFilter`。官方给�
 
 ## Authorize with AuthorizationFilter
 
-...
+`AuthorizationFilter` 的架构比较简单，这里基于一张架构图进行说明。
+
+![AuthorizationFilter授权架构](./img/AuthorizationFilter.excalidraw.png)
+
+1. 授权过滤器 `AuthorizationFilter` 会从 `SecurityContextHolder` 中获取用户的认证信息 `Authentication`，并将授权职责委派给 `RequestMatcherDelegatingAuthorizationManager`。
+
+2. `RequestMatcherDelegatingAuthorizationFilter` 本身是 `AuthorizationManager` 的实现，其组合了多个 `RequestMatcherEntry`。
+
+3. `RequestMatcherEntry` 是一个包装类，组合了 `RequestMatcher` 和 `AuthorizationManager`。通过 `RequestMatcher` 检查路径是否匹配，若匹配则将具体的授权职责委派给关联的 `AuthorizationManager`。
+
+4. `AuthorizationManager` 在授权过后，将授权结果封装为 `AuthorizationDecision` 返回给 `AuthorizationFilter`。
+
+5. `AuthorizationFilter` 根据授权结果决定是否允许请求通过，并通过 `AuthorizationEventPublisher` 发布授权结果。
 
 
 ## Authorize with FilterSecurityInterceptor
