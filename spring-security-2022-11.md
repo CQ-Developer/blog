@@ -196,4 +196,13 @@ spring security 在 *5.5* 版本中支持了 `AuthorizationFilter`。官方给�
 
 ## Authorize with FilterSecurityInterceptor
 
-...
+`FilterSecurityInterceptor` 的执行流程较为复杂，并且其对 `Filter` 语义的表达较弱。
+
+首先用一张图看下 `FilterSecurityInterceptor` 的继承结构。
+
+![FileSecurityInterceptor继承体系](./img/type.FilterSecurityInterceptor.excalidraw.png)
+
+可以看到 `FilterSecurityInterceptor` 并不像其他安全过滤器那样是基于 `GenericFilterBean` 或 `OncePerRequestFilter` 实现，而是简单的实现了 `Filter`，并将大部分逻辑在抽象类中实现。
+
+`FilterSecurityInterceptor` 的执行流程相对比较复杂，涉及的组件非常多，这里也基于一张图进行说明。
+
