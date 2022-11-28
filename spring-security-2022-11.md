@@ -248,3 +248,8 @@ spring security 默认是的选择的是 `AffirmativeBased` 模式。
 
 `AccessDecisionVoter` 代表一个选民，其主要职责是对是否允许执行进行投票。
 
+![AccessDecisionVoter继承体系](./img//type.AccessDecisionVoter.excalidraw.png)
+
+`ExpressionBasedFilterInvocationSecurityMetadataSource` 默认情况下会使用 `WebExpressionVoter`，该实现的执行流程较复杂，涉及 SpEL 的相关内容，这里不展开。
+
+总的来说只要记住 `AccessDecisionManager` 会根据 `AccessDecisionVoter` 的投票结果给予授权。
