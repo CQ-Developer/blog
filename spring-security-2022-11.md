@@ -40,8 +40,6 @@ public String hello() {
 
 此时再访问 */hello* 端点将被重定向到一个页面并在登录后，被再次重定向回 */hello* 端点，从而完成访问。
 
-
-
 # Auto Configure By Spring Boot
 
 之所有有这种能力，是因为 spring boot 为我们提供了自动装配。通过 `spring-autoconfigure-metadata.properties` 文件列出 servlet 环境下的自动装配类如下。
@@ -69,8 +67,6 @@ public String hello() {
 - org.springframework.security.web.FilterChainProxy
 
 - org.springframework.security.config.annotation.web.builders.HttpSecurity
-
-
 
 # Filter Architecture
 
@@ -100,8 +96,6 @@ spring security 的 `Filter` 架构是理解 spring security 的核心，也是�
 
 如果想知道 spring security 的认证和授权逻辑，`SecurityFilterChain` 中的各种 `Filter` 就是最好的切入口。
 
-
-
 # SecurityContext Architecture
 
 `Authentication` 负责表示用户的认证信息，包括用户名，密码，权限等相关信息。
@@ -119,8 +113,6 @@ spring security 的 `Filter` 架构是理解 spring security 的核心，也是�
 > - `SecurityContextHolder` 负责在一个请求线程中管理 `SecurityContext`。因为请求会在多个 `Filter` 之间传递，所以需要一种策略让每个 `Filter` 都能获得 `SecurityContext` 从而履行自己的职责。
 >
 > - `SecurityContextRepository` 负责在多个请求线程之间管理 `SecurityContext`。毕竟不能让用户每次发一个请求都重新认证一次。
-
-
 
 # Authentication Architecture
 
@@ -154,8 +146,6 @@ spring security 的认证架构比较复杂，先抽象的用一张认证的主�
 
 4. 认证成功后，`DaoAuthenticationProvider` 会封装一个新的已认证的 `UsernamePasswordAuthenticationToken` 并将其返回给 `BasicAuthenticationFilter`，并存储到 `SecurityContextHolder` 中。
 
-
-
 # Authorization Architecture
 
 spring security 的授权架构相对比较简单，基本是通过授权过滤器实现的。但基于不同的配置，spring security 会选择两个不同的授权过滤器。
@@ -176,7 +166,6 @@ spring security 在 *5.5* 版本中支持了 `AuthorizationFilter`。官方给�
 
 其实还有一点也很重要，就是语义上的统一。如前文所述，在认证过滤器中认证职责被委派给了 `AuthenticationManager`。授权过滤器将授权职责委派给 `AuthroizationManager` 可以更好的将认证和授权的语义统一。
 
-
 ## Authorize with AuthorizationFilter
 
 `AuthorizationFilter` 的架构比较简单，这里基于一张架构图进行说明。
@@ -193,10 +182,9 @@ spring security 在 *5.5* 版本中支持了 `AuthorizationFilter`。官方给�
 
 5. `AuthorizationFilter` 根据授权结果决定是否允许请求通过，并通过 `AuthorizationEventPublisher` 发布授权结果。
 
-
 ## Authorize with FilterSecurityInterceptor
 
-`FilterSecurityInterceptor` 的执行流程较为复杂，并且其对 `Filter` 语义的表达较弱。
+`FilterSecurityInterceptor` 的执行流程并不复杂，但其涉及的相关组件较多，并且其对 `Filter` 语义的表达较弱。
 
 首先用一张图看下 `FilterSecurityInterceptor` 的继承结构。
 
@@ -206,3 +194,22 @@ spring security 在 *5.5* 版本中支持了 `AuthorizationFilter`。官方给�
 
 `FilterSecurityInterceptor` 的执行流程相对比较复杂，涉及的组件非常多，这里也基于一张图进行说明。
 
+![FilterSecurityInterceptor架构图](./img/architecture.FilterSecurityInterceptor.excalidraw.png)
+
+1. `FilterSecurityInterceptor` 会将 `ServletRequest`，`ServletResponse`，`FilterChain` 包装在 `FilterInvocation` 中。
+
+2. `FilterSecurityInterceptor` 会从 `SecurityContextHolder` 中获取用户的 `Authentication`。
+
+3. `SecurityMetadataSource` 根据 `FilterInvocation` 的信息解析出当前请求对应的 `ConfigAttribute` 集合。
+
+4. 将认证的职责委派给 `AccessDecisionManager`。
+
+5. `AccessDecisionManager` 会基于 `AccessDecisionVoter` 的投票结果决定是否给予授权。
+
+在 `FilterSecurityInterceptor` 的处理流程之外，还要理解其中包含的几个核心组件。
+
+### SecurityMetadataSource
+
+### AccessDecisionManager
+
+### AccessDecisionVoter
