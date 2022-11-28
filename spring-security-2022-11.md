@@ -210,6 +210,41 @@ spring security 在 *5.5* 版本中支持了 `AuthorizationFilter`。官方给�
 
 ### SecurityMetadataSource
 
+`SecurityMetadataSource` 的核心任务就是从对象中解析出对应的 `ConfigAttribute`，它的继承体系如下。
+
+![SecurityMetadataSource继承体系](./img/type.SecurityMetadataSource.excalidraw.png)
+
+在 `FilterSecurityInterceptor` 场景下，spring security 默认配置的是 `ExpressionBasedFilterInvocationSecurityMetadataSource`。
+
+从它的命名可以知道。
+
+1. `ExpressionBasedFilterInvocationSecurityMetadataSource` 是一个 `SecurityMetadataSource` 接口的实现。
+
+2. `ExpressionBasedFilterInvocationSecurityMetadataSource` 接收的安全对象是 `FilterInvocation`。
+
+3. `ExpressionBasedFilterInvocationSecurityMetadataSource` 返回的 `ConfigAttribute` 是基于表达式实现的。
+
+从 `ExpressionBasedFilterInvocationSecurityMetadataSource` 的构造器函数可以知道它会将传入的 `ConfigAttribute`, 处理成 `WebExpressionConfigAttribute`。
+
 ### AccessDecisionManager
 
+`AccessDecisionManager` 的核心任务是决定是否予以授权，基于不同的模式，spring security 提供了不同的实现。
+
+![AccessDecisionManager](./img/type.AccessDecisionManager.excalidraw.png)
+
+根据实现的命名就可以知道具体的实现模式。
+
+- `AffirmativeBased` 基于乐观模式：只要有一个选民投赞成票，就给予授权。
+
+- `ConsensusBased` 基于共识模式：投赞成票的选民多则给予授权，否则拒绝授权。如果平票，则根据配置决定是否给予授权。
+
+- `UnanimousBased` 给予一致模式：只要有一个选民偷反对票，则拒绝授权。也就是说必须全员通过。
+
+以上3种 `AccessDecisionManager` 的实现都需要处理所有选民全部弃权的场景，spring security 默人的处理方式是拒绝授权。
+
+spring security 默认是的选择的是 `AffirmativeBased` 模式。
+
 ### AccessDecisionVoter
+
+`AccessDecisionVoter` 代表一个选民，其主要职责是对是否允许执行进行投票。
+
