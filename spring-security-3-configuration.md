@@ -32,7 +32,7 @@ spring security 的配置体系较为复杂，主要涉及2个核心配置类。
 
 # SecurityBuilder Architecture
 
-无论是 `WebSecurity` 还是 `HttpSecurity`，它们都实现了 `SecurityBuilder` 接口。这里将重点讨论 `SecurityBuilder` 接口记忆它的实现，该接口是整个配置架构中的核心接口。
+无论是 `WebSecurity` 还是 `HttpSecurity`，它们都实现了 `SecurityBuilder` 接口。这里将重点讨论 `SecurityBuilder` 接口以及它的实现，该接口是整个配置架构中的核心接口。
 
 首先通过一张图看下 `SecurityBuilder` 的继承关系。
 
@@ -46,6 +46,23 @@ spring security 的配置体系较为复杂，主要涉及2个核心配置类。
 
     - `AuthenticationManagerBuilder` 构建 `ProviderManager`。
 
-2. AbstractConfiguredSecurityBuilder 是负责主要的配置过程。
+2. `AbstractConfiguredSecurityBuilder` 负责管理整个构建过程，包括整个构建的生命周期，构建过程的状态管理，以及构建目标对象的相关配置。
+
+`AbstractConfiguredSecurityBuilder` 会在内部维护一个 `SecurityConfigurer` 列表，在构建前可以通过配置添加相应的 `SecurityConfigurer`。在构建过程会将所有配置的 `SecurityConfigurer` 应用到对目标对象的构建过程中，从而实现对需要构建的目标进行配置。
+
+在开发过程中，该配置流程通常发生在对 `HttpSecurity` 进行自定义时。可以说对 `HttpSecurity` 的每个配置选项，都有一个相应的 `SecurityConfigurer` 与之对应。它们会在最终构建 `DefaultSecurityFilterChain` 时，决定使用哪些 `Filter`，以及 `Filter` 的相关行为。
+
+拿一个简单的例子来说。
+
+```java
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    return httpSecurity
+            .httpBasic(Customizer.withDefaults())
+            .build();
+}
+```
+
+以上代码实际上实在 `HttpSecurity` 中添加了一个 `HttpBasicConfigurer`。并且会在构建对象时，将其自身的配置应用到 `HttpSecurity` 中，最终在 `DefaultSecurityFilterChain` 中配置了一个 `BasicAuthenticationFilter`。
 
 # SecurityConfigurer Architecture
