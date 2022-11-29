@@ -40,8 +40,6 @@ Here we have four roles in a hierarchy ROLE_ADMIN ⇒ ROLE_STAFF ⇒ ROLE_USER �
 
 通过对源代码的追踪可以知道，在为 `WebExpressionVoter` 配置 `SecurityExpressionHandler` 时，会从 `ApplicationContext` 中查找类型为 `RoleHierarchy` 的 Bean，这部分代码可以在 `ExpressionUrlAuthorizationConfigurer#getExpressionHandler` 方法中找到。
 
-> 注意：低版本中通过 `WebSecurityConfigurerAdapter` 
-
 下面的示例通过在 `ApplicationContext` 中注册一个 `RoleHierarchy` 类型的实例，启用了权限继承。
 
 ```java
