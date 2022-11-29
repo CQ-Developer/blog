@@ -14,7 +14,7 @@ spring security 的配置体系较为复杂，主要涉及2个核心配置类。
 
 另外，`WebSecurityConfigurerAdapter` 在 **spring boot 3.0.0** 或 **spring security 6.0.0** 中被完全删除了。
 
-## WebSecurity
+# WebSecurity
 
 `WebSecurity` 的主要职责是配置 `FilterChainProxy`，开发中一般很少直接用到 `WebSecurity`。之前在 [Filter架构](./spring-security-1-architecture.md#filter-architecture) 章节中介绍过 `FilterChainProxy`。
 
@@ -22,7 +22,7 @@ spring security 的配置体系较为复杂，主要涉及2个核心配置类。
 
 在 spring boot 环境中会为我们自动装配 `FilterChainProxy`，其中涉及到了 `WebSecurity` 的创建和使用的过程，可以参考 `WebSecurityConfiguration` 配置类，在之前的 [自动装配章节](./spring-security-1-architecture.md#auto-configure-by-spring-boot) 中讨论过。
 
-## HttpSecurity
+# HttpSecurity
 
 `HttpSecurity` 的主要职责是配置 `SecurityFilterChain`，这是日常开发中配置的核心。之前在 [Filter架构](./spring-security-1-architecture.md#filter-architecture) 章节中介绍的关于 spring security 默认提供的所有 `Filter` 都可以通过 `HttpSecurity` 进行配置。
 
