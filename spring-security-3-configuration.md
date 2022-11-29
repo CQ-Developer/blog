@@ -32,6 +32,20 @@ spring security 的配置体系较为复杂，主要涉及2个核心配置类。
 
 # SecurityBuilder Architecture
 
-无论是 `WebSecurity` 还是 `HttpSecurity`，它们都实现了 `SecurityBuilder` 接口。
+无论是 `WebSecurity` 还是 `HttpSecurity`，它们都实现了 `SecurityBuilder` 接口。这里将重点讨论 `SecurityBuilder` 接口记忆它的实现，该接口是整个配置架构中的核心接口。
+
+首先通过一张图看下 `SecurityBuilder` 的继承关系。
+
+![SecurityBuilder继承体系](./img/type.SecurityBuilder.excalidraw.png)
+
+1. `SecurityBuilder` 的核心是通过 `build()` 方法构建出一个对象，该对象通常是 spring security 架构中的一个核心组件。
+
+    - `WebSecurity` 构建 `FilterChainProxy`。
+
+    - `HttpSecurity` 构建 `DefaultSecurityFilterChain`。
+
+    - `AuthenticationManagerBuilder` 构建 `ProviderManager`。
+
+2. AbstractConfiguredSecurityBuilder 是负责主要的配置过程。
 
 # SecurityConfigurer Architecture
