@@ -63,6 +63,14 @@ public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws
 }
 ```
 
-以上代码实际上是在 `HttpSecurity` 中添加了一个 `HttpBasicConfigurer`。并在构建对象时，将其自身的配置应用到 `HttpSecurity` 中，最终在 `DefaultSecurityFilterChain` 中配置了一个 `BasicAuthenticationFilter`。
+以上代码实际上是在 `HttpSecurity` 中添加了一个 `HttpBasicConfigurer`。后者的目的是创建一个 `BasicAuthenticationFilter` 并对其进行配置，最终将其添加到由 `HttpSecurity` 构建的 `DefaultSecurityFilterChain` 中。
 
 # SecurityConfigurer Architecture
+
+`SecurityConfigurer` 的职责主要有两点：初始化 `SecurityBuilder`，配置`SecurityBuilder`。可以将它看作是 `SecurityBuilder` 的配置类。
+
+首先看下 SecurityConfigurer 的继承体系。
+
+![SecurityConfigurer继承体系](./img/type.SecurityConfigurer.excalidraw.png)
+
+> 注意：被标注为 `@Deprected` 的类没有展示。
