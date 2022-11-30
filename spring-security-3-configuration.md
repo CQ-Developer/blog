@@ -73,4 +73,10 @@ public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws
 
 ![SecurityConfigurer继承体系](./img/type.SecurityConfigurer.excalidraw.png)
 
-> 注意：被标注为 `@Deprected` 的类没有展示。
+> 注意：除 `WebSecurityConfigurerAdapter` 外的被标注为 `@Deprected` 的类没有展示。
+
+在 `SecurityConfigurer` 中较为复杂的是它的泛型，所以在图中标注了其泛型继承的体系，同时在 *Javadoc* 中也有详细的说明。
+
+在开发中较为常用的是 `AbstractHttpConfigurer` 的子类实现，这里不详述各个子类的具体作用，这部分在 *Javadoc* 中有详述。
+
+当对 `HttpSecurity` 进行配置时，实际上就是在创建各种 `AbstractHttpConfigurer` 的实现并进行进一步的自定义。它们有些用于创建 `Filter`，有些用于创建在 `Filter` 中共享的组件，最终这些实现都会作用到 `DefaultSecurityFilterChain` 中，从而达到自定义认证授权过程的目的。
