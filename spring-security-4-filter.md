@@ -47,3 +47,11 @@ addFilterBefore 方法可以在指定的 Filter 之前添加一个 Filter。
 举一个具体的例子。
 
 spring security 默认提供了 `CsrfFilter` 为应用程序提供了 *CSRF* 保护。
+
+它是基于令牌实现的安全机制，会在 *Request* 域中创建一个名为 *_csrf* 的属性。该属性保存了 `CsrfToken` 对象，在第一次进行 *GET*，*HEAD*，*TRACE*，*OPTIONS* 请求时会将 `CsrfToken` 作为 *Request* 域的一个属性返回。
+
+当发起其他类型的请求时，需要在请求头中添加名为 *X-CSRF-TOKEN* 的头部，或在请求参数中添加名为 *_csrf* 参数，否则将拒绝请求。
+
+该机制在前后端分离的架构中无法使用，因为前端无法获得 *Request* 域对象。
+
+在了解了 CSRF 保护的原理后，可以通过在 `CsrfFilter` 后添加一个过滤器的方式，将 `CsrfToken` 通过请求头发送给前端，以此解决该问题。
